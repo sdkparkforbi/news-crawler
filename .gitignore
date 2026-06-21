@@ -1,0 +1,19 @@
+# 파이썬
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# 수집/추출 산출물 (체크포인트·데이터는 커밋하지 않음)
+articles_*.csv
+daily_counts_*.csv
+bodies_*.jsonl
+bodies_*.csv
+gaps_*.csv
+
+# 비밀
+.env
+*.env
+!.env.example

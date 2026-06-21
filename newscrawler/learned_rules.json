@@ -1,0 +1,1102 @@
+{
+ "reporter": {
+  "news.mt.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "bloter.net": [
+   "xpath",
+   "//*[@id=\"skin-11\"]"
+  ],
+  "news2day.co.kr": [
+   "xpath",
+   "//*[@id=\"writeName\"]"
+  ],
+  "newsworks.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "investchosun.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" byline \")]"
+  ],
+  "biz.chosun.com": [
+   "jsonld",
+   ""
+  ],
+  "kfenews.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "dnews.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" journalist_name \")]"
+  ],
+  "delighti.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "fnnews.com": [
+   "meta",
+   "article:author"
+  ],
+  "yna.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" intrnal \")]"
+  ],
+  "kukinews.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "news.bizwatch.co.kr": [
+   "meta",
+   "author"
+  ],
+  "economist.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "dizzotv.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter \")]"
+  ],
+  "etnews.com": [
+   "meta",
+   "dable:author"
+  ],
+  "view.asiae.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "dailian.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "econonews.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" secline \")]"
+  ],
+  "chosun.com": [
+   "jsonld",
+   ""
+  ],
+  "sisafocus.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "breaknews.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" writer \")]"
+  ],
+  "yonhapnewstv.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter-name \")]"
+  ],
+  "kyeonggi.com": [
+   "xpath",
+   "//*[@id=\"writeName\"]"
+  ],
+  "segye.com": [
+   "meta",
+   "author"
+  ],
+  "munhwa.com": [
+   "meta",
+   "author"
+  ],
+  "kado.net": [
+   "meta",
+   "author"
+  ],
+  "imaeil.com": [
+   "meta",
+   "author"
+  ],
+  "mbn.mk.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "joseilbo.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" s_name \")]"
+  ],
+  "inews24.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "donga.com": [
+   "meta",
+   "dable:author"
+  ],
+  "khan.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" editor \")]"
+  ],
+  "news.jtbc.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "newscj.com": [
+   "meta",
+   "author"
+  ],
+  "ohmynews.com": [
+   "meta",
+   "dable:author"
+  ],
+  "kmib.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "sisajournal.com": [
+   "meta",
+   "author"
+  ],
+  "ytn.co.kr": [
+   "meta",
+   "author"
+  ],
+  "viva100.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter \")]"
+  ],
+  "intn.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "ichannela.com": [
+   "meta",
+   "author"
+  ],
+  "mediapen.com": [
+   "jsonld",
+   ""
+  ],
+  "news.kbs.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter-name-link \")]"
+  ],
+  "hani.co.kr": [
+   "meta",
+   "author"
+  ],
+  "hidomin.com": [
+   "meta",
+   "author"
+  ],
+  "idjnews.kr": [
+   "meta",
+   "author"
+  ],
+  "news.sbs.co.kr": [
+   "meta",
+   "author"
+  ],
+  "ajunews.com": [
+   "meta",
+   "article:author"
+  ],
+  "hankookilbo.com": [
+   "meta",
+   "article:author"
+  ],
+  "the-biz.co.kr": [
+   "meta",
+   "author"
+  ],
+  "econovill.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "mt.co.kr": [
+   "meta",
+   "author"
+  ],
+  "pressian.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "bntnews.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "gukjenews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "dt.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "biz.heraldcorp.com": [
+   "meta",
+   "author"
+  ],
+  "tongilnews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "topstarnews.net": [
+   "meta",
+   "author"
+  ],
+  "nc.press": [
+   "meta",
+   "author"
+  ],
+  "hansbiz.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "newdaily.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "asiatoday.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "wikitree.co.kr": [
+   "meta",
+   "author"
+  ],
+  "news.mtn.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "coinreaders.com": [
+   "meta",
+   "dable:author"
+  ],
+  "seoul.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "cbci.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "sidae.com": [
+   "meta",
+   "dable:author"
+  ],
+  "etoday.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "bizwnews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "jeollailbo.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "weekly.chosun.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "economytalk.kr": [
+   "meta",
+   "author"
+  ],
+  "ebn.co.kr": [
+   "meta",
+   "author"
+  ],
+  "ekn.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "greened.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "ntoday.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "seoulfn.com": [
+   "meta",
+   "author"
+  ],
+  "webeconomy.co.kr": [
+   "meta",
+   "author"
+  ],
+  "ddaily.co.kr": [
+   "meta",
+   "author"
+  ],
+  "newstnt.com": [
+   "meta",
+   "author"
+  ],
+  "beyondpost.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" w1 \")]"
+  ],
+  "zdnet.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "shinailbo.co.kr": [
+   "meta",
+   "author"
+  ],
+  "joongang.co.kr": [
+   "meta",
+   "author"
+  ],
+  "wolyo.co.kr": [
+   "meta",
+   "author"
+  ],
+  "newslock.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "g-enews.com": [
+   "meta",
+   "dable:author"
+  ],
+  "segyebiz.com": [
+   "meta",
+   "dable:author"
+  ],
+  "tvreport.co.kr": [
+   "meta",
+   "author"
+  ],
+  "maniareport.com": [
+   "meta",
+   "dable:author"
+  ],
+  "spotvnews.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "mydaily.co.kr": [
+   "meta",
+   "author"
+  ],
+  "osen.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "interfootball.co.kr": [
+   "meta",
+   "author"
+  ],
+  "goodmorningcc.com": [
+   "meta",
+   "author"
+  ],
+  "sportschosun.com": [
+   "meta",
+   "author"
+  ],
+  "ftoday.co.kr": [
+   "meta",
+   "author"
+  ],
+  "enewstoday.co.kr": [
+   "meta",
+   "author"
+  ],
+  "isplus.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" journalist_line \")]"
+  ],
+  "starnewskorea.com": [
+   "meta",
+   "author"
+  ],
+  "kgnews.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "medipana.com": [
+   "meta",
+   "author"
+  ],
+  "kbmaeil.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter \")]"
+  ],
+  "kbsm.net": [
+   "meta",
+   "dable:author"
+  ],
+  "joongboo.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "sports.donga.com": [
+   "meta",
+   "dable:author"
+  ],
+  "tenasia.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "thepublic.kr": [
+   "meta",
+   "author"
+  ],
+  "jeonmae.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "mhnse.com": [
+   "meta",
+   "author"
+  ],
+  "besteleven.com": [
+   "meta",
+   "author"
+  ],
+  "tournews21.com": [
+   "meta",
+   "author"
+  ],
+  "srtimes.kr": [
+   "meta",
+   "author"
+  ],
+  "obsnews.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "kormedi.com": [
+   "meta",
+   "author"
+  ],
+  "dgmbc.com": [
+   "jsonld",
+   ""
+  ],
+  "nocutnews.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "netongs.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "sentv.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "mediafine.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "sports.hankooki.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "knpnews.com": [
+   "meta",
+   "author"
+  ],
+  "ikbc.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "gamemeca.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "sportsworldi.com": [
+   "meta",
+   "dable:author"
+  ],
+  "m-economynews.com": [
+   "jsonld",
+   ""
+  ],
+  "sisajournal-e.com": [
+   "meta",
+   "author"
+  ],
+  "namdonews.com": [
+   "meta",
+   "author"
+  ],
+  "pennmike.com": [
+   "meta",
+   "author"
+  ],
+  "insight.co.kr": [
+   "meta",
+   "author"
+  ],
+  "sports.khan.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "xportsnews.com": [
+   "meta",
+   "dable:author"
+  ],
+  "sportalkorea.com": [
+   "meta",
+   "author"
+  ],
+  "newsen.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "thesportstimes.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" info-txt \")]"
+  ],
+  "fourfourtwo.co.kr": [
+   "meta",
+   "author"
+  ],
+  "footballist.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "sportsseoul.com": [
+   "meta",
+   "dable:author"
+  ],
+  "golfhankook.hankooki.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "kjmbc.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "enter.etoday.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "slist.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "lecturernews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "health.chosun.com": [
+   "jsonld",
+   ""
+  ],
+  "hitnews.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "viewsnnews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "busan.com": [
+   "meta",
+   "author"
+  ],
+  "imnews.imbc.com": [
+   "meta",
+   "author"
+  ],
+  "cjb.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" dropdown-item \")]"
+  ],
+  "kookje.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" tab \")]"
+  ],
+  "dkilbo.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "vegannews.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "megaeconomy.co.kr": [
+   "meta",
+   "author"
+  ],
+  "shindonga.donga.com": [
+   "meta",
+   "dable:author"
+  ],
+  "lawtimes.co.kr": [
+   "meta",
+   "author"
+  ],
+  "ezyeconomy.com": [
+   "meta",
+   "author"
+  ],
+  "newsbrite.net": [
+   "meta",
+   "og:article:author"
+  ],
+  "newstomato.com": [
+   "jsonld",
+   ""
+  ],
+  "daily.hankooki.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "newsian.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "eroun.net": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "bizhankook.com": [
+   "meta",
+   "dable:author"
+  ],
+  "mhns.co.kr": [
+   "meta",
+   "author"
+  ],
+  "gametoc.co.kr": [
+   "meta",
+   "author"
+  ],
+  "bigtanews.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "biz.newdaily.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "newsway.co.kr": [
+   "meta",
+   "author"
+  ],
+  "theguru.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "rookie.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "fortunekorea.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "thereport.co.kr": [
+   "meta",
+   "author"
+  ],
+  "koreadaily.com": [
+   "meta",
+   "author"
+  ],
+  "energy-news.co.kr": [
+   "meta",
+   "author"
+  ],
+  "bzeronews.com": [
+   "meta",
+   "author"
+  ],
+  "thefairnews.co.kr": [
+   "meta",
+   "author"
+  ],
+  "kpanews.co.kr": [
+   "meta",
+   "author"
+  ],
+  "dailypharm.com": [
+   "jsonld",
+   ""
+  ],
+  "incheonilbo.com": [
+   "meta",
+   "author"
+  ],
+  "inthenews.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "dentalnews.or.kr": [
+   "jsonld",
+   ""
+  ],
+  "newsprime.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "atstar1.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "pointe.co.kr": [
+   "meta",
+   "author"
+  ],
+  "kor.theasian.asia": [
+   "meta",
+   "author"
+  ],
+  "pn.or.kr": [
+   "meta",
+   "author"
+  ],
+  "ppss.kr": [
+   "meta",
+   "author"
+  ],
+  "news.knn.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "kyongbuk.co.kr": [
+   "meta",
+   "author"
+  ],
+  "hellot.net": [
+   "meta",
+   "dable:author"
+  ],
+  "ize.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "kdfnews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "ngonews.kr": [
+   "meta",
+   "author"
+  ],
+  "meconomynews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "boannews.com": [
+   "xpath",
+   "//*[@id=\"news_util\"]"
+  ],
+  "fins.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "vogue.co.kr": [
+   "meta",
+   "article:author"
+  ],
+  "newspost.kr": [
+   "meta",
+   "author"
+  ],
+  "tennis.co.kr": [
+   "meta",
+   "author"
+  ],
+  "lawissue.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "kpinews.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "seoultimes.news": [
+   "jsonld",
+   ""
+  ],
+  "newstown.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "heraldmuse.com": [
+   "meta",
+   "author"
+  ],
+  "itbiznews.com": [
+   "meta",
+   "author"
+  ],
+  "goal.com": [
+   "jsonld",
+   ""
+  ],
+  "stardailynews.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "cnbnews.com": [
+   "meta",
+   "author"
+  ],
+  "newsfreezone.co.kr": [
+   "meta",
+   "author"
+  ],
+  "joongangenews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "cnbizm.com": [
+   "meta",
+   "author"
+  ],
+  "spochoo.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "djtimes.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "socialvalue.kr": [
+   "meta",
+   "author"
+  ],
+  "ccreview.co.kr": [
+   "meta",
+   "author"
+  ],
+  "joynews24.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "dongponews.net": [
+   "meta",
+   "author"
+  ],
+  "gpkorea.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" byline \")]"
+  ],
+  "dailysportshankook.co.kr": [
+   "meta",
+   "author"
+  ],
+  "jejudomin.co.kr": [
+   "meta",
+   "author"
+  ],
+  "womaneconomy.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "farmnmarket.com": [
+   "meta",
+   "dable:author"
+  ],
+  "swtvnews.com": [
+   "meta",
+   "dable:author"
+  ],
+  "gokorea.kr": [
+   "meta",
+   "author"
+  ],
+  "housingherald.co.kr": [
+   "meta",
+   "author"
+  ],
+  "harpersbazaar.co.kr": [
+   "meta",
+   "author"
+  ],
+  "asiaa.co.kr": [
+   "meta",
+   "author"
+  ],
+  "jnilbo.com": [
+   "meta",
+   "author"
+  ],
+  "handmk.com": [
+   "meta",
+   "author"
+  ],
+  "venturesquare.net": [
+   "jsonld",
+   ""
+  ],
+  "agrinet.co.kr": [
+   "meta",
+   "author"
+  ],
+  "nspna.com": [
+   "meta",
+   "author"
+  ],
+  "theopiniontimes.news": [
+   "jsonld",
+   ""
+  ],
+  "aitimes.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "medigatenews.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" name \")]"
+  ],
+  "mkhealth.co.kr": [
+   "meta",
+   "og:article:author"
+  ],
+  "ggmedinews.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "hemophilia.co.kr": [
+   "meta",
+   "author"
+  ],
+  "ibulgyo.com": [
+   "meta",
+   "author"
+  ],
+  "digitalbizon.com": [
+   "meta",
+   "og:article:author"
+  ],
+  "mk.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" col_lg1_fix \")]"
+  ],
+  "nongmin.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" menu_box \")]"
+  ],
+  "news.tf.co.kr": [
+   "meta",
+   "author"
+  ],
+  "biz.sbs.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "newstree.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" jnlistbox \")]"
+  ],
+  "wowtv.co.kr": [
+   "jsonld",
+   ""
+  ],
+  "sedaily.com": [
+   "meta",
+   "dable:author"
+  ],
+  "movist.com": [
+   "meta",
+   "author"
+  ],
+  "moneys.co.kr": [
+   "meta",
+   "dable:author"
+  ],
+  "hinews.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" e1 \")]"
+  ],
+  "healthinnews.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" e1 \")]"
+  ],
+  "newsis.com": [
+   "jsonld",
+   ""
+  ],
+  "travelitoday.com": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" pe_tit \")]"
+  ],
+  "christiantoday.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" fz14 \")]"
+  ],
+  "jjan.kr": [
+   "meta",
+   "author"
+  ],
+  "edaily.co.kr": [
+   "xpath",
+   "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" reporter_info \")]"
+  ]
+ },
+ "date": {
+  "news2day.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "investchosun.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "dnews.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "imaeil.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "mediapen.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "news.kbs.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "beyondpost.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "mbnmoney.mbn.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "dgmbc.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "sentv.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "kjmbc.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "busan.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "kookje.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "boannews.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "nongmin.com": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ],
+  "lak.co.kr": [
+   "regex",
+   "입력\\s*[:\\s]*(\\d{4}[-.]\\d{2}[-.]\\d{2}\\s+\\d{2}:\\d{2})"
+  ]
+ }
+}
