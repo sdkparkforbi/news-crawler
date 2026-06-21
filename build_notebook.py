@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""뉴스크롤러 노트북 생성: notebooks/뉴스크롤러.ipynb (Colab · JupyterLab 공용).
+"""뉴스크롤러 노트북 생성: notebooks/뉴스크롤러.ipynb
 
 생성:  python build_notebook.py
 """
@@ -10,97 +10,82 @@ nb = nbf.v4.new_notebook(); cells = []
 md = lambda s: cells.append(nbf.v4.new_markdown_cell(s))
 co = lambda s: cells.append(nbf.v4.new_code_cell(s))
 
-md("""# 뉴스크롤러 — 네이버 뉴스 수집 + 본문추출 (Colab · JupyterLab 공용)
+md("""# 네이버 뉴스 수집기
 
-검색어 한 건을 **① 일별 수집 → ② 본문·메타 추출 → ③ 요약/CSV** 까지 함수 호출만으로 실행합니다.
-수집은 네이버 무한스크롤의 **more-API 커서**를 따라가 전수에 가깝게 모읍니다
-(구버전 `&start=` 방식의 ~66% 과소수집 버그 수정).
+검색어 하나로 네이버 뉴스를 **모아서 → 본문까지 채워 → 엑셀(CSV)로** 만들어 줍니다.
 
-### 어디서 실행하나
-| 환경 | 준비 |
-|---|---|
-| **Google Colab** | 이 노트북만 업로드 → 아래 1번 셀이 repo를 클론. *private repo면* Colab Secrets(🔑)에 `GH_TOKEN`(GitHub 토큰) 등록 + 노트북 액세스 ON |
-| **미들턴 JupyterLab / 로컬** | `git clone <repo>` 후 `news-crawler/notebooks/뉴스크롤러.ipynb` 열어 실행 (1번 셀이 로컬 패키지를 자동 인식) |
+## 사용법 (딱 3가지만 하면 됩니다)
+1. **위에서부터 셀(회색 칸)을 차례대로 ▶ 실행**합니다. (왼쪽 ▶ 버튼 클릭, 또는 `Shift+Enter`)
+2. **`설정` 셀**에서 검색어와 기간만 본인 것으로 바꿉니다.
+3. 끝까지 실행하면 결과 파일이 생깁니다.
 
-> 수집·추출은 오래 걸립니다. **작업폴더(2번 셀)에 저장**하니 끊겨도 다시 Run 하면 이어서 합니다.""")
+> 오래 걸려도 괜찮습니다. 중간에 멈추거나 창을 닫아도, **다시 ▶ 실행하면 하던 데부터 이어서** 합니다.""")
 
-co('''#@title 1) 코드 준비 + 라이브러리 설치 (환경 자동감지)
+co('''#@title 1) 준비  (그냥 ▶ 실행만)
 import os, sys, subprocess
 
-REPO = "sdkparkforbi/news-crawler"        # ← 본인 repo로 바꿔도 됨 (user/name)
+REPO = "sdkparkforbi/news-crawler"
 
 def _sh(c):
     r = subprocess.run(c, shell=True, capture_output=True, text=True)
     return (r.stdout or "") + (r.stderr or "")
 
 def _have_pkg():
-    # repo 안(=JupyterLab/로컬)에서 실행하면 newscrawler 가 상위 폴더에 있음
     here = os.getcwd()
     for up in [here, os.path.dirname(here), os.path.dirname(os.path.dirname(here))]:
         if up and os.path.isdir(os.path.join(up, "newscrawler")):
             if up not in sys.path: sys.path.insert(0, up)
             return True
     try:
-        import newscrawler  # 이미 설치/경로에 있으면
-        return True
+        import newscrawler; return True
     except Exception:
         return False
 
-if not _have_pkg():
-    # Colab 등: repo 클론 (private 이면 토큰 필요)
-    token = os.environ.get("GH_TOKEN", "")
-    try:
-        from google.colab import userdata
-        token = token or (userdata.get("GH_TOKEN") or "")
-    except Exception:
-        pass
-    auth = f"{token}@" if token else ""
+if not _have_pkg():                     # 코드가 없으면 내려받기 (Colab)
     name = REPO.split("/")[-1]
-    print(_sh(f"git clone -q https://{auth}github.com/{REPO} 2>/dev/null || (cd {name} && git pull -q)"))
+    print(_sh(f"git clone -q https://github.com/{REPO} 2>/dev/null || (cd {name} && git pull -q)"))
     if os.path.isdir(name): sys.path.insert(0, name)
 
 print(_sh("pip -q install requests lxml"))
 from newscrawler import pipeline as nc
-print("준비완료 |", "Colab" if nc.in_colab() else "JupyterLab/로컬")''')
+print("준비완료")''')
 
-co('''#@title 2) 작업폴더 (수집물 영구저장 · 재접속 시 이어하기)
-# Colab     -> 구글드라이브 마운트 후 MyDrive/뉴스작업
-# JupyterLab-> 홈 아래 뉴스작업  (절대경로를 직접 줘도 됨)
+co('''#@title 2) 저장 폴더  (그냥 ▶ 실행만)
+# 결과를 여기에 저장합니다. 중간에 끊겨도 다시 실행하면 이어서 합니다.
+#  · Colab      -> 구글드라이브 연결 팝업이 뜨면 "허용". MyDrive/뉴스작업 에 저장.
+#  · 서버/로컬  -> 홈 폴더의 뉴스작업 에 저장.
 nc.setup("뉴스작업")''')
 
-md("""## Step 0 — 수집 설정
-검색어와 기간만 정합니다. (사진/동영상 탭 제외하고 전체 기사 수집)""")
+md("""## 설정 — 여기만 직접 고치세요
+따옴표 `" "` **안의 값만** 본인 것으로 바꾸고 ▶ 실행하세요.""")
 
 co('''#@title 3) 설정
-KEYWORD = "고려아연"      #@param {type:"string"}
-START   = "2024-09-01"   #@param {type:"string"}
-END     = "2024-09-30"   #@param {type:"string"}
+KEYWORD = "고려아연"      #@param {type:"string"}   ← 검색어
+START   = "2024-09-01"   #@param {type:"string"}   ← 시작일 (YYYY-MM-DD)
+END     = "2024-09-30"   #@param {type:"string"}   ← 종료일 (YYYY-MM-DD)
 print(f"검색어 {KEYWORD} | {START} ~ {END}")''')
 
-md("""## Step 1 — 수집 (네이버 일별 · more-API 커서)
-재실행하면 미수집일만 이어서 합니다. 결과: `articles_<검색어>.csv`""")
+md("""## 1단계 — 기사 모으기
+기간이 길수록 오래 걸립니다. 결과: `articles_<검색어>.csv` (기사 목록)""")
 co('''nc.collect(KEYWORD, START, END)''')
 
-md("""## Step 2 — 본문·메타 추출
-제목/발행일/언론사/기자/본문/요약/이미지를 채웁니다. 신규 URL만 이어서. 결과: `bodies_<검색어>.jsonl`""")
+md("""## 2단계 — 본문 채우기
+모은 기사들의 제목·날짜·언론사·기자·본문을 채웁니다. 결과: `bodies_<검색어>.jsonl`""")
 co('''nc.extract_bodies(KEYWORD, workers=6)''')
 
-md("""## Step 3 — 요약 + 엑셀용 CSV 내보내기""")
+md("""## 3단계 — 결과 정리 (엑셀 파일 만들기)""")
 co('''nc.summary(KEYWORD)
-nc.to_csv(KEYWORD)   # bodies_<검색어>.csv (utf-8-sig, 엑셀에서 바로 열림)''')
+nc.to_csv(KEYWORD)''')
 
 md("""## 결과물
-작업폴더에 생깁니다:
-- `articles_<검색어>.csv` — 수집 인벤토리(날짜·언론사·제목·원문URL·네이버URL)
-- `daily_counts_<검색어>.csv` — 일별 건수(재개 체크포인트)
-- `bodies_<검색어>.jsonl` — 본문/메타 (추출 원본)
-- `bodies_<검색어>.csv` — 엑셀용 정리본
+저장 폴더(Colab은 구글드라이브 `MyDrive/뉴스작업`)에 생깁니다.
 
-### 팁
-- 본문이 비거나 기자가 안 잡힌 매체는 자가학습으로 보강:
-  `python -m newscrawler.discover --from-jsonl bodies_<검색어>.jsonl --min-count 1`
-  → 다시 `nc.extract_bodies(KEYWORD)` → `python -m newscrawler.backfill bodies_<검색어>.jsonl`
-- 수집이 자꾸 하루 10건에서 막히면(스로틀) 잠시 후 다시 실행하면 자동 복구 재시도합니다.""")
+- **`bodies_<검색어>.csv`** ← 더블클릭하면 엑셀로 열립니다. (제목·날짜·언론사·기자·본문)
+- `articles_<검색어>.csv`, `bodies_<검색어>.jsonl` — 중간 작업 파일
+
+### 참고
+- **1단계에서 어느 날이 10건만 모이고 멈춘 것 같으면**, 그 셀을 다시 ▶ 실행하세요. (네이버가 잠깐 막은 것이라 다시 하면 채워집니다.)
+- 본문(`body`) 칸이 비거나 기자(`reporter`)가 빈 기사는 일부 있을 수 있습니다. (속보·유료기사 등 원래 본문이 없는 경우)""")
 
 nb["cells"] = cells
 nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3"}
