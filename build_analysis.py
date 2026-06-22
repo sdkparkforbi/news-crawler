@@ -73,17 +73,29 @@ C_CONFIG = r"""# 3) 설정 — 여기만 바꾸세요
 #   ↑ 검색어를 바꾸면 회사설명·분류카테고리도 주제에 맞게 바꾸세요(관련 N개 + 비관련-* 몇 개).
 #   예) 고려아연: "MBK·영풍의 공개매수 분쟁" / ["1. M&A/투자","2. 주가/투자", ... "비관련-1. 동종업계 타사", ...]
 # ===========================================================
-import getpass
+import os, getpass
+# .env 파일이 있으면 읽어 환경변수로 등록(python-dotenv 불필요)
+if os.path.exists(".env"):
+    for _ln in open(".env", encoding="utf-8"):
+        _ln = _ln.strip()
+        if _ln and not _ln.startswith("#") and "=" in _ln:
+            _k, _v = _ln.split("=", 1); os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+# 엔드포인트·모델 — 환경변수로 바꿀 수 있음(기본값은 본 연구 설정)
+MIDDLETON_URL  = os.environ.get("MIDDLETON_URL", "https://middleton.p-e.kr/api/embeddings")
+BGE_MODEL      = os.environ.get("BGE_MODEL", "bge-m3:latest")
+OAI_EMB_MODEL  = os.environ.get("OAI_EMB_MODEL", "text-embedding-3-large")
+CLASSIFY_MODEL = os.environ.get("CLASSIFY_MODEL", "gpt-4o-mini")
 KW = 검색어.strip(); EVENT_DATE = 사건일.strip(); EVENT2 = 이차사건.strip()
 KEY_MID = ""; OAI = None
 if any(m.startswith("bge") for m in 사용임베딩):
-    KEY_MID = getpass.getpass("MIDDLETON_API_KEY (bge-m3용, 없으면 그냥 Enter): ").strip()
+    KEY_MID = os.environ.get("MIDDLETON_API_KEY") or getpass.getpass("MIDDLETON_API_KEY (bge-m3용, 없으면 Enter): ").strip()
 if 필터링 or any(m.startswith("oai") for m in 사용임베딩):
-    _k = getpass.getpass("OPENAI_API_KEY (필터링/3large용, 없으면 그냥 Enter): ").strip()
+    _k = os.environ.get("OPENAI_API_KEY") or getpass.getpass("OPENAI_API_KEY (필터링/3large용, 없으면 Enter): ").strip()
     if _k:
         from openai import OpenAI
         OAI = OpenAI(api_key=_k); del _k
 print("검색어:", KW, "· 사건일:", EVENT_DATE, "· 필터링:", 필터링)
+print("bge 서버:", MIDDLETON_URL)
 print("bge-m3 키:", "있음" if KEY_MID else "없음", "· OpenAI 키:", "있음" if OAI else "없음")"""
 
 C_LOAD = r"""# 4) 데이터 로드 & 필터링
@@ -131,7 +143,7 @@ if 필터링 and OAI is not None:
         lines = [f"[{j}] 제목: {df['title'].iat[i]}\n본문: {str(df['body'].iat[i])[:400]}" for j,i in enumerate(idxs)]
         for attempt in range(4):
             try:
-                resp = OAI.chat.completions.create(model="gpt-4o-mini", temperature=0,
+                resp = OAI.chat.completions.create(model=CLASSIFY_MODEL, temperature=0,
                     response_format={"type":"json_object"},
                     messages=[{"role":"system","content":_sys},
                               {"role":"user","content":'다음 기사들을 분류해 {"results":[...]} 로 출력:\n\n' + "\n\n".join(lines)}])
@@ -207,8 +219,8 @@ def embed_bge(texts):
         ok=None
         for _ in range(4):
             try:
-                r = requests.post("https://middleton.p-e.kr/api/embeddings", headers=hdr,
-                                  json={"model":"bge-m3:latest","input":texts[i:i+B]}, timeout=120)
+                r = requests.post(MIDDLETON_URL, headers=hdr,
+                                  json={"model":BGE_MODEL,"input":texts[i:i+B]}, timeout=120)
                 if r.status_code==200: ok=[e["embedding"] for e in r.json()["data"]]; break
             except Exception: pass
             time.sleep(3)
@@ -221,7 +233,7 @@ def embed_oai(texts):
     for i in range(0,len(texts),B):
         ok=None
         for _ in range(5):
-            try: ok=[d.embedding for d in OAI.embeddings.create(model="text-embedding-3-large", input=texts[i:i+B]).data]; break
+            try: ok=[d.embedding for d in OAI.embeddings.create(model=OAI_EMB_MODEL, input=texts[i:i+B]).data]; break
             except Exception as e: print("  재시도", str(e)[:50]); time.sleep(4)
         if ok is None: raise RuntimeError("OpenAI 호출 실패")
         out.extend(ok)
