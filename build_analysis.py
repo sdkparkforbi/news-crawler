@@ -80,7 +80,9 @@ if os.path.exists(".env"):
     for _ln in open(".env", encoding="utf-8"):
         _ln = _ln.strip()
         if _ln and not _ln.startswith("#") and "=" in _ln:
-            _k, _v = _ln.split("=", 1); os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+            _k, _v = _ln.split("=", 1); _v = _v.strip()
+            if _v[:1] not in ('"', "'") and " #" in _v: _v = _v.split(" #", 1)[0].strip()
+            os.environ.setdefault(_k.strip(), _v.strip('"').strip("'"))
 # 엔드포인트·모델 — 환경변수로 바꿀 수 있음(기본값은 본 연구 설정)
 MIDDLETON_URL  = os.environ.get("MIDDLETON_URL", "https://middleton.p-e.kr/api/embeddings")
 BGE_MODEL      = os.environ.get("BGE_MODEL", "bge-m3:latest")
