@@ -58,24 +58,32 @@ subprocess.run([sys.executable,"-m","pip","-q","install",*pkgs])
 print("설치 완료")"""
 
 C_CONFIG = r"""# 3) 설정 — 여기만 바꾸세요
-검색어     = "고려아연"          # 크롤러에서 쓴 검색어 (bodies_검색어.csv 와 같아야 함)
-사건일     = "2024-09-13"        # 시간 원점 (이 날을 0으로 사전/사후를 가름)
-이차사건   = "2025-01-23"        # 후속 핵심 사건일(없으면 ""). 분석기간=원점-1년 ~ 이차사건+1년
+검색어     = "홈플러스"          # 크롤러에서 쓴 검색어 (bodies_검색어.csv 와 같아야 함)
+사건일     = "2025-03-04"        # 시간 원점 (이 날을 0으로 사전/사후를 가름)
+이차사건   = "2025-12-29"        # 후속 핵심 사건일(없으면 ""). 분석기간=원점-1년 ~ 이차사건+1년
 사용임베딩  = ["bge_tb", "bge_noun", "oai_tb", "oai_noun"]
-#   ↑ 4가지 전부. 일부만 쓰려면 줄이세요(키 없는 건 자동 건너뜀).
 #   bge_tb=bge-m3·제목본문 · bge_noun=bge-m3·명사 · oai_tb=3large·제목본문 · oai_noun=3large·명사
+
+# ── 관련성 필터링(분류) — gpt-4o-mini ──
+필터링     = True               # True면 LLM이 관련/무관 분류 후 '관련'만 분석. False면 검색결과 전체
+회사설명   = "MBK파트너스 소유, 2025년 3월 기업회생 신청"   # 회사 한 줄 맥락
+분류카테고리 = ["1. 회생/매각", "2. 점포/영업", "3. 실적/경영", "4. 노동/고용",
+            "5. 금융/신용", "6. 소비자/상품", "7. 논란/리스크", "8. ESG/사회공헌",
+            "비관련-1. 동종업계 타사", "비관련-2. 단순 비교/스침", "비관련-3. 광고성 홍보"]
+#   ↑ 검색어를 바꾸면 회사설명·분류카테고리도 주제에 맞게 바꾸세요(관련 N개 + 비관련-* 몇 개).
+#   예) 고려아연: "MBK·영풍의 공개매수 분쟁" / ["1. M&A/투자","2. 주가/투자", ... "비관련-1. 동종업계 타사", ...]
 # ===========================================================
 import getpass
 KW = 검색어.strip(); EVENT_DATE = 사건일.strip(); EVENT2 = 이차사건.strip()
 KEY_MID = ""; OAI = None
 if any(m.startswith("bge") for m in 사용임베딩):
     KEY_MID = getpass.getpass("MIDDLETON_API_KEY (bge-m3용, 없으면 그냥 Enter): ").strip()
-if any(m.startswith("oai") for m in 사용임베딩):
-    _k = getpass.getpass("OPENAI_API_KEY (3large용, 없으면 그냥 Enter): ").strip()
+if 필터링 or any(m.startswith("oai") for m in 사용임베딩):
+    _k = getpass.getpass("OPENAI_API_KEY (필터링/3large용, 없으면 그냥 Enter): ").strip()
     if _k:
         from openai import OpenAI
         OAI = OpenAI(api_key=_k); del _k
-print("검색어:", KW, "· 사건일:", EVENT_DATE)
+print("검색어:", KW, "· 사건일:", EVENT_DATE, "· 필터링:", 필터링)
 print("bge-m3 키:", "있음" if KEY_MID else "없음", "· OpenAI 키:", "있음" if OAI else "없음")"""
 
 C_LOAD = r"""# 4) 데이터 로드 & 필터링
@@ -100,7 +108,56 @@ print(f"원본 {n0} → 필터 후 {len(df)} 행 (본문 150자↑·시각유효
 print(f"기간 {df.dt.min().date()} ~ {df.dt.max().date()} · 매체 {df.press.nunique()}곳 · 기자 {df.reporter.nunique()}")
 print(f"사전(사건 전) {int((df.dt<EV).sum())}건 · 사후 {int((df.dt>=EV).sum())}건")"""
 
-C_NOUN = r"""# 5) 형태소 분석 — 명사 추출 + TF-IDF(0.05) (명사 임베딩 쓸 때만)
+C_FILTER = r"""# 5) 관련성 필터링 — gpt-4o-mini 로 관련/무관 + 카테고리 분류 (필터링=True 일 때만)
+import json, time
+if 필터링 and OAI is not None:
+    _rel  = [c for c in 분류카테고리 if not c.startswith("비관련")]
+    _nrel = [c for c in 분류카테고리 if c.startswith("비관련")]
+    _sys = ("너는 한국 뉴스 분류기다. 회사 '" + KW + "' (" + 회사설명 + ") 관련 연구용.\n"
+            "각 기사(번호·제목·본문미리보기)에 대해 관련여부와 카테고리를 정해 JSON으로만 출력:\n"
+            '{"results":[{"i":번호,"related":true/false,"category":"<라벨>"}, ...]}\n'
+            "related=true=그 회사를 실질적으로 다룸. false=스침/비교 언급, 다른 회사가 주제, 광고성.\n"
+            "related=true면 카테고리(하나): " + " / ".join(_rel) + "\n"
+            "related=false면(하나): " + " / ".join(_nrel) + "\n"
+            "라벨은 위 문자열을 번호 포함 정확히 그대로. 모든 기사를 빠짐없이 분류.")
+    _canon = {c.split(".")[0].strip(): c for c in 분류카테고리}
+    df["_key"] = df["title"].astype(str) + "|" + df["published_at"].astype(str)
+    CMAP = f"_classmap_{KW}.json"
+    cmap = json.load(open(CMAP, encoding="utf-8")) if os.path.exists(CMAP) else {}
+    todo = [i for i in range(len(df)) if df["_key"].iat[i] not in cmap]
+    print(f"분류 대상 {len(todo):,}/{len(df):,} (이미 {len(cmap):,})")
+    for sx in range(0, len(todo), 20):
+        idxs = todo[sx:sx+20]
+        lines = [f"[{j}] 제목: {df['title'].iat[i]}\n본문: {str(df['body'].iat[i])[:400]}" for j,i in enumerate(idxs)]
+        for attempt in range(4):
+            try:
+                resp = OAI.chat.completions.create(model="gpt-4o-mini", temperature=0,
+                    response_format={"type":"json_object"},
+                    messages=[{"role":"system","content":_sys},
+                              {"role":"user","content":'다음 기사들을 분류해 {"results":[...]} 로 출력:\n\n' + "\n\n".join(lines)}])
+                for o in json.loads(resp.choices[0].message.content).get("results", []):
+                    j = int(o.get("i", -1))
+                    if 0 <= j < len(idxs):
+                        cat = str(o.get("category","")).strip(); cat = _canon.get(cat.split(".")[0].strip(), cat)
+                        relb = cat[:1].isdigit() and not cat.startswith("비관련")
+                        cmap[df["_key"].iat[idxs[j]]] = {"related": bool(relb), "category": cat}
+                break
+            except Exception as e:
+                time.sleep(2*(attempt+1))
+        if (sx//20) % 20 == 0:
+            json.dump(cmap, open(CMAP,"w",encoding="utf-8"), ensure_ascii=False); print(f"  {min(sx+20,len(todo)):,}/{len(todo):,} 분류…")
+    json.dump(cmap, open(CMAP,"w",encoding="utf-8"), ensure_ascii=False)
+    df["관련여부"] = df["_key"].map(lambda k: "관련" if cmap.get(k,{}).get("related") else "무관")
+    df["category"] = df["_key"].map(lambda k: cmap.get(k,{}).get("category",""))
+    df.drop(columns=["_key"]).to_csv(f"bodies_{KW}_classified.csv", index=False, encoding="utf-8-sig")
+    n_all = len(df); df = df[df["관련여부"]=="관련"].reset_index(drop=True)
+    print(f"필터링 후 관련 {len(df):,}건 (무관 {n_all-len(df):,} 제외) → bodies_{KW}_classified.csv")
+elif 필터링:
+    print("필터링=True 이지만 OpenAI 키가 없어 건너뜁니다(설정 셀에서 키 입력).")
+else:
+    print("필터링 미사용 — 검색결과 전체를 분석합니다.")"""
+
+C_NOUN = r"""# 6) 형태소 분석 — 명사 추출 + TF-IDF(0.05) (명사 임베딩 쓸 때만)
 import json
 NOUN_CACHE = f"_nouns_{KW}.jsonl"
 nouns_kept = None
@@ -132,7 +189,7 @@ if any("noun" in m for m in 사용임베딩):
 else:
     print("명사 임베딩 미사용 → 형태소 분석 건너뜀")"""
 
-C_EMBED = r"""# 6) 임베딩 4가지 (캐시 emb_검색어_*.npy)
+C_EMBED = r"""# 7) 임베딩 4가지 (캐시 emb_검색어_*.npy)
 import requests, time
 METHODS = {
   "bge_tb":  {"name":"① bge-m3·제목본문","kind":"bge","inp":"tb"},
@@ -187,7 +244,7 @@ for key in 사용임베딩:
 assert EMB, "사용 가능한 임베딩이 없습니다(키를 확인하세요)."
 print("사용 임베딩:", [METHODS[k]["name"] for k in EMB])"""
 
-C_CUBE = r"""# 7) 지표 큐브 — 4임베딩 × (1·5·10·20일) × (기사·기자매체·매체) × {수·평균·≥0.8/0.9 절대·상대}
+C_CUBE = r"""# 8) 지표 큐브 — 4임베딩 × (1·5·10·20일) × (기사·기자매체·매체) × {수·평균·≥0.8/0.9 절대·상대}
 WINS=[1,5,10,20]; UNITS=["기사","기자-매체","매체"]
 def cents(V, sub, unit):
     if unit=="기사":
@@ -221,7 +278,7 @@ cube=pd.DataFrame(rows,columns=["method","win","unit","mid","count","mean","abs8
 cube.to_csv(f"indicators_{KW}.csv",index=False,encoding="utf-8-sig")
 print("지표 큐브 저장 →", f"indicators_{KW}.csv", cube.shape)"""
 
-C_FIG = r"""# 8) 시각화 — 지표별 템플릿(행:임베딩 × 열:시간창, 칸마다 3단위)
+C_FIG = r"""# 9) 시각화 — 지표별 템플릿(행:임베딩 × 열:시간창, 칸마다 3단위)
 import matplotlib, matplotlib.pyplot as plt
 try: import koreanize_matplotlib
 except Exception: pass
@@ -252,7 +309,7 @@ tpl("abs90", f"{KW} — ③ ≥0.9 절대빈도(symlog)", f"fig_abs90_{KW}.png",
 tpl("rel80", f"{KW} — ④ ≥0.8 상대빈도(%)", f"fig_rel80_{KW}.png")
 tpl("rel90", f"{KW} — ④ ≥0.9 상대빈도(%)", f"fig_rel90_{KW}.png")"""
 
-C_TEST = r"""# 9) 통계 검정 — 매체 단위 사전→사후 (단측 Mann–Whitney) + CUSUM 변화점
+C_TEST = r"""# 10) 통계 검정 — 매체 단위 사전→사후 (단측 Mann–Whitney) + CUSUM 변화점
 from scipy.stats import mannwhitneyu
 IND=[("count","매체 수"),("mean","평균 유사도"),("abs80","≥0.8 절대"),("abs90","≥0.9 절대"),("rel80","≥0.8 상대%"),("rel90","≥0.9 상대%")]
 def pre_post(name,ind,unit="매체",W=20):
@@ -317,7 +374,7 @@ plt.tight_layout(rect=[0,0,1,0.97]); plt.savefig(f"fig_cusum_{KW}.png",dpi=112);
 cdf=pd.DataFrame(cz,columns=["임베딩","매체 수","평균 유사도","≥0.9 절대","≥0.9 상대"])
 cdf.to_csv(f"cusum_{KW}.csv",index=False,encoding="utf-8-sig"); print(cdf.to_string(index=False))"""
 
-C_BURST = r"""# 10) 발행 타이밍 버스트 — 사건일 60분 몰아쓰기(rapid-fire) 무작위 영모형 검정
+C_BURST = r"""# 11) 발행 타이밍 버스트 — 사건일 60분 몰아쓰기(rapid-fire) 무작위 영모형 검정
 ev = df[df.dt.dt.normalize()==EV].copy()
 print("사건일", EVENT_DATE, "기사:", len(ev), "건")
 def peak60(mins):
@@ -371,13 +428,14 @@ def build(intro, save):
         md("## 1단계 — 설치"), code(C_INSTALL),
         md("## 2단계 — 저장 폴더 (크롤러의 bodies_검색어.csv 가 있는 곳)"), code(save),
         md("## 3단계 — 설정 (검색어·사건일·임베딩·API 키)"), code(C_CONFIG),
-        md("## 4단계 — 데이터 로드 & 필터링"), code(C_LOAD),
-        md("## 5단계 — 형태소 분석 (명사 + TF-IDF)"), code(C_NOUN),
-        md("## 6단계 — 임베딩 4가지 (bge-m3 / text-embedding-3-large × 제목본문 / 명사)"), code(C_EMBED),
-        md("## 7단계 — 지표 큐브"), code(C_CUBE),
-        md("## 8단계 — 시각화 (지표별 템플릿 그림)"), code(C_FIG),
-        md("## 9단계 — 통계 검정 (Mann–Whitney + CUSUM)"), code(C_TEST),
-        md("## 10단계 — 발행 타이밍 버스트"), code(C_BURST),
+        md("## 4단계 — 데이터 로드 & 분석기간 한정"), code(C_LOAD),
+        md("## 5단계 — 관련성 필터링 (gpt-4o-mini 분류 → '관련'만 남김)"), code(C_FILTER),
+        md("## 6단계 — 형태소 분석 (명사 + TF-IDF)"), code(C_NOUN),
+        md("## 7단계 — 임베딩 4가지 (bge-m3 / text-embedding-3-large × 제목본문 / 명사)"), code(C_EMBED),
+        md("## 8단계 — 지표 큐브"), code(C_CUBE),
+        md("## 9단계 — 시각화 (지표별 템플릿 그림)"), code(C_FIG),
+        md("## 10단계 — 통계 검정 (Mann–Whitney + CUSUM)"), code(C_TEST),
+        md("## 11단계 — 발행 타이밍 버스트"), code(C_BURST),
         md("## 완료"), code(C_DONE),
     ]
     return {"cells":cells,
@@ -394,7 +452,7 @@ for fn, intro, save in [("notebooks/뉴스분석.ipynb", COLAB_INTRO, COLAB_SAVE
 
 # 코드 셀 문법 검사
 import ast
-for name,src in [("INSTALL",C_INSTALL),("CONFIG",C_CONFIG),("LOAD",C_LOAD),("NOUN",C_NOUN),
+for name,src in [("INSTALL",C_INSTALL),("CONFIG",C_CONFIG),("LOAD",C_LOAD),("FILTER",C_FILTER),("NOUN",C_NOUN),
                  ("EMBED",C_EMBED),("CUBE",C_CUBE),("FIG",C_FIG),("TEST",C_TEST),("BURST",C_BURST),
                  ("DONE",C_DONE),("COLAB_SAVE",COLAB_SAVE),("SERVER_SAVE",SERVER_SAVE)]:
     try: ast.parse(src); print("  문법 OK:", name)
