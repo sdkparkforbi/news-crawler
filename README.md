@@ -67,6 +67,28 @@ python -m newscrawler.extract --batch articles_고려아연.csv --out bodies_고
 url, naver_url, domain, source, chars, ok`. 발행시각은 `YYYY-MM-DD HH:MM` 정규화,
 `ok`는 본문(≥150자) 성공 여부.
 
+## 다음 단계: 동조화 분석 노트북
+
+수집한 `bodies_<검색어>.csv` 를 받아 **필터링 → 형태소(명사·TF-IDF) → 임베딩 4가지 → 시각화 → 통계검정(Mann–Whitney·CUSUM) → 발행 타이밍 버스트** 까지 한 번에 돌립니다. 크롤러와 똑같이 Colab·서버 양쪽에서 동작합니다.
+
+- **Google Colab**: `notebooks/뉴스분석.ipynb`
+  (주소창: `https://colab.research.google.com/github/sdkparkforbi/news-crawler/blob/main/notebooks/뉴스분석.ipynb`)
+- **서버 JupyterLab**: `notebooks/뉴스분석_서버.ipynb` (위에서 `git clone` 한 폴더 안)
+
+위에서부터 ▶ 실행하고 **설정 셀**에서 검색어·사건일·임베딩과 API 키만 입력하면 됩니다.
+
+| 단계 | 내용 |
+|---|---|
+| ① 필터링 | 본문 150자↑·발행시각 유효·중복 제거 |
+| ② 형태소 | Kiwi 명사(NNG·NNP) + TF-IDF≥0.05 추림 → `_nouns_<KW>.jsonl` |
+| ③ 임베딩 4가지 | **bge-m3**(`MIDDLETON_API_KEY`) · **text-embedding-3-large**(`OPENAI_API_KEY`) × (제목+본문 / 명사) → `emb_<KW>_*.npy` 캐시 |
+| ④ 지표 큐브 | 4임베딩 × (1·5·10·20일) × (기사·기자매체·매체) × {수·평균·≥0.8·0.9 절대/상대} → `indicators_<KW>.csv` |
+| ⑤ 시각화 | 지표별 템플릿 그림 `fig_count/mean/abs80/abs90/rel80/rel90_<KW>.png` |
+| ⑥ 통계검정 | 매체 단위 사전→사후 Mann–Whitney(`tests_<KW>.csv`, `fig_tests_<KW>.png`) + CUSUM 변화점(`cusum_<KW>.csv`, `fig_cusum_<KW>.png`) |
+| ⑦ 버스트 | 사건일 60분 몰아쓰기(rapid-fire) 무작위 영모형 검정 → `burst_<KW>.csv` |
+
+> 키가 없는 임베딩은 자동으로 건너뜁니다. 키는 노트북에서 `getpass`로 입력받아 **메모리에만** 두며 파일·로그에 남기지 않습니다. (분석 노트북은 `build_analysis.py` 로 생성)
+
 ## 구성
 ```
 news-crawler/

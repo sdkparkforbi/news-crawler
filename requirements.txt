@@ -4,3 +4,14 @@ lxml>=4.9
 
 # 노트북 빌드(개발용, 실행에는 불필요)
 nbformat>=5.0
+
+# 분석 노트북 (필터링→형태소→임베딩→시각화→통계검정)
+pandas>=1.5
+numpy>=1.23
+kiwipiepy>=0.17
+scikit-learn>=1.2
+matplotlib>=3.6
+koreanize-matplotlib>=0.1
+scipy>=1.10
+statsmodels>=0.14
+openai>=1.0
