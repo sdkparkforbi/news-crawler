@@ -59,13 +59,14 @@ print("설치 완료")"""
 
 C_CONFIG = r"""# 3) 설정 — 여기만 바꾸세요
 검색어     = "고려아연"          # 크롤러에서 쓴 검색어 (bodies_검색어.csv 와 같아야 함)
-사건일     = "2024-09-13"        # 분석 기준일 (이 날을 0으로 사전/사후를 가름)
+사건일     = "2024-09-13"        # 시간 원점 (이 날을 0으로 사전/사후를 가름)
+이차사건   = "2025-01-23"        # 후속 핵심 사건일(없으면 ""). 분석기간=원점-1년 ~ 이차사건+1년
 사용임베딩  = ["bge_tb", "bge_noun", "oai_tb", "oai_noun"]
 #   ↑ 4가지 전부. 일부만 쓰려면 줄이세요(키 없는 건 자동 건너뜀).
 #   bge_tb=bge-m3·제목본문 · bge_noun=bge-m3·명사 · oai_tb=3large·제목본문 · oai_noun=3large·명사
 # ===========================================================
 import getpass
-KW = 검색어.strip(); EVENT_DATE = 사건일.strip()
+KW = 검색어.strip(); EVENT_DATE = 사건일.strip(); EVENT2 = 이차사건.strip()
 KEY_MID = ""; OAI = None
 if any(m.startswith("bge") for m in 사용임베딩):
     KEY_MID = getpass.getpass("MIDDLETON_API_KEY (bge-m3용, 없으면 그냥 Enter): ").strip()
@@ -91,8 +92,11 @@ n0 = len(df)
 df = df[df["body"].str.len() >= 150]
 df = df[df["dt"].notna()]
 df = df.drop_duplicates(subset=["press","title","published_at"]).reset_index(drop=True)
-EV = pd.Timestamp(EVENT_DATE)
-print(f"원본 {n0} → 필터 후 {len(df)} 행 (본문 150자↑·시각유효·중복제거)")
+EV = pd.Timestamp(EVENT_DATE); EV2 = pd.Timestamp(EVENT2) if EVENT2 else None
+WIN0 = EV - pd.DateOffset(years=1); WIN1 = (EV2 if EV2 is not None else EV) + pd.DateOffset(years=1)
+df = df[(df.dt>=WIN0)&(df.dt<=WIN1)].reset_index(drop=True)   # 분석기간으로 한정(인덱스=임베딩 순서)
+print(f"분석 기간 {WIN0.date()} ~ {WIN1.date()} · 원점 {EV.date()}" + (f" · 2차 {EV2.date()}" if EV2 is not None else ""))
+print(f"원본 {n0} → 필터 후 {len(df)} 행 (본문 150자↑·시각유효·중복제거·기간한정)")
 print(f"기간 {df.dt.min().date()} ~ {df.dt.max().date()} · 매체 {df.press.nunique()}곳 · 기자 {df.reporter.nunique()}")
 print(f"사전(사건 전) {int((df.dt<EV).sum())}건 · 사후 {int((df.dt>=EV).sum())}건")"""
 
@@ -233,7 +237,9 @@ def tpl(metric,title,fname,logy=False):
                 T=cube[(cube.method==name)&(cube.win==W)&(cube.unit==u)].sort_values("mid")
                 ax.plot(T["mid"],T[metric],lw=0.9,color=co,marker="o",ms=3.0,mfc=co,mec="white",mew=0.5,label=u)
             if logy: ax.set_yscale("symlog")
-            ax.axvline(EV,color="black",ls="--",lw=1.0); ax.grid(alpha=0.13)
+            ax.axvline(EV,color="black",ls="--",lw=1.0)
+            if EV2 is not None: ax.axvline(EV2,color="#7a7a7a",ls=":",lw=1.0)
+            ax.grid(alpha=0.13)
             if ri==0: ax.set_title(wl+" 창",fontsize=12)
             if ci==0: ax.set_ylabel(name,fontsize=9)
     axes[0][-1].legend(fontsize=8,loc="upper right")
@@ -299,6 +305,7 @@ for ri,name in enumerate(RUN):
     for ci,(ind,lbl) in enumerate(CI):
         det,xs,ys=cusum_detect(name,ind); ax=axes[ri][ci]
         ax.plot(xs,ys,color="#2c5da8",lw=1.2); ax.axhline(5,color="#C23A2B",ls="--",lw=1); ax.axvline(EV,color="black",ls="--",lw=1)
+        if EV2 is not None: ax.axvline(EV2,color="#7a7a7a",ls=":",lw=1)
         if det is not None: ax.axvline(det,color="#E0954F",ls=":",lw=1.4)
         ax.grid(alpha=0.13)
         if ri==0: ax.set_title(lbl,fontsize=11)
